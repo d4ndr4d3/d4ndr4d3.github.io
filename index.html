@@ -6,6 +6,7 @@
   <title>@d4ndr4d3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,12 +23,42 @@
       color: var(--ink);
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── INTRO OVERLAY ── */
+    #intro {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #intro-canvas {
+      display: block;
+    }
+
+    #intro.fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      pointer-events: none;
+    }
+
+    /* ── MAIN CONTENT ── */
+    #main {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.4s;
     }
+
+    #main.visible { opacity: 1; }
 
     .grain {
       position: fixed;
@@ -36,18 +67,14 @@
       opacity: 0.035;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       background-size: 200px;
+      z-index: 1;
     }
 
     .card {
       max-width: 680px;
       width: 100%;
-      opacity: 0;
-      transform: translateY(24px);
-      animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
-    }
-
-    @keyframes rise {
-      to { opacity: 1; transform: translateY(0); }
+      position: relative;
+      z-index: 2;
     }
 
     .header {
@@ -68,9 +95,7 @@
       color: var(--ink);
     }
 
-    .handle span {
-      color: var(--accent);
-    }
+    .handle span { color: var(--accent); }
 
     .mono-tag {
       font-family: 'IBM Plex Mono', monospace;
@@ -79,18 +104,9 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       align-self: center;
-      opacity: 0;
-      animation: rise 0.7s ease 0.6s forwards;
     }
 
-    .section {
-      margin-bottom: 2.2rem;
-      opacity: 0;
-      animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-    .section:nth-child(2) { animation-delay: 0.3s; }
-    .section:nth-child(3) { animation-delay: 0.45s; }
-    .section:nth-child(4) { animation-delay: 0.6s; }
+    .section { margin-bottom: 2.2rem; }
 
     .section-label {
       font-family: 'IBM Plex Mono', monospace;
@@ -137,21 +153,12 @@
       color: var(--accent);
     }
 
-    .divider {
-      width: 2rem;
-      height: 1px;
-      background: var(--line);
-      margin: 2rem 0;
-    }
-
     .footer {
       padding-top: 1.5rem;
       border-top: 1px solid var(--line);
       display: flex;
       align-items: center;
       gap: 1.5rem;
-      opacity: 0;
-      animation: rise 0.7s ease 0.75s forwards;
     }
 
     .gh-link {
@@ -166,7 +173,6 @@
     }
 
     .gh-link:hover { color: var(--accent); }
-
     .gh-link svg { width: 14px; height: 14px; }
 
     .italic-note {
@@ -180,45 +186,139 @@
   </style>
 </head>
 <body>
+
+  <!-- INTRO THREE.JS -->
+  <div id="intro">
+    <canvas id="intro-canvas"></canvas>
+  </div>
+
+  <!-- MAIN PAGE -->
   <div class="grain"></div>
+  <div id="main">
+    <div class="card">
+      <div class="header">
+        <h1 class="handle"><span>@</span>d4ndr4d3</h1>
+        <span class="mono-tag">NLP · Law · Language</span>
+      </div>
 
-  <div class="card">
-    <div class="header">
-      <h1 class="handle"><span>@</span>d4ndr4d3</h1>
-      <span class="mono-tag">NLP · Law · Language</span>
-    </div>
+      <div class="section">
+        <p class="section-label">Focus</p>
+        <p class="section-body">
+          Natural Language Processing — with a focus on <strong>Natural Legal Language Processing (NLLP)</strong> and the computational structures that govern legal argumentation.
+        </p>
+      </div>
 
-    <div class="section">
-      <p class="section-label">Focus</p>
-      <p class="section-body">
-        Natural Language Processing — with a focus on <strong>Natural Legal Language Processing (NLLP)</strong> and the computational structures that govern legal argumentation.
-      </p>
-    </div>
+      <div class="section">
+        <p class="section-label">Background</p>
+        <p class="section-body">Computational linguistics, argument mining, and the intersection of formal language theory with legal text.</p>
+      </div>
 
-    <div class="section">
-      <p class="section-label">Background</p>
-      <p class="section-body">Computational linguistics, argument mining, and the intersection of formal language theory with legal text.</p>
-    </div>
+      <div class="section">
+        <p class="section-label">Interests</p>
+        <div class="tags">
+          <span class="tag primary">NLLP</span>
+          <span class="tag primary">Argument Mining</span>
+          <span class="tag">Computational Linguistics</span>
+          <span class="tag">Legal AI</span>
+          <span class="tag">Text Classification</span>
+          <span class="tag">Discourse Structure</span>
+        </div>
+      </div>
 
-    <div class="section">
-      <p class="section-label">Interests</p>
-      <div class="tags">
-        <span class="tag primary">NLLP</span>
-        <span class="tag primary">Argument Mining</span>
-        <span class="tag">Computational Linguistics</span>
-        <span class="tag">Legal AI</span>
-        <span class="tag">Text Classification</span>
-        <span class="tag">Discourse Structure</span>
+      <div class="footer">
+        <a class="gh-link" href="https://github.com/d4ndr4d3" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+          github.com/d4ndr4d3
+        </a>
+        <span class="italic-note">always learning.</span>
       </div>
     </div>
-
-    <div class="footer">
-      <a class="gh-link" href="https://github.com/d4ndr4d3" target="_blank">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
-        github.com/d4ndr4d3
-      </a>
-      <span class="italic-note">always learning.</span>
-    </div>
   </div>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('intro-canvas');
+      const intro  = document.getElementById('intro');
+      const main   = document.getElementById('main');
+
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      canvas.width  = W;
+      canvas.height = H;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(W, H);
+      renderer.setClearColor(0xf5f2eb, 1);
+
+      const scene  = new THREE.Scene();
+      scene.background = new THREE.Color(0xf5f2eb);
+
+      const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 1000);
+      camera.position.z = 2; // close = logo fills screen
+
+      // Load logo.jpg (must be in same folder as index.html)
+      const loader  = new THREE.TextureLoader();
+      const texture = loader.load('logo.jpg', onLoaded);
+      texture.minFilter = THREE.LinearFilter;
+
+      const geometry = new THREE.PlaneGeometry(1, 1);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const mesh     = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      function onLoaded(tex) {
+        // Correct aspect ratio of the plane to match image
+        const aspect = tex.image.width / tex.image.height;
+        mesh.scale.set(aspect, 1, 1);
+        startAnimation();
+      }
+
+      // Animation
+      const START_Z  = 2;
+      const END_Z    = 20;
+      const DURATION = 2400; // ms
+      let   startTime = null;
+      let   rafId     = null;
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function startAnimation() {
+        // Render one frame immediately so there's no blank flash
+        renderer.render(scene, camera);
+
+        function animate(ts) {
+          if (!startTime) startTime = ts;
+          const elapsed = ts - startTime;
+          const raw = Math.min(elapsed / DURATION, 1);
+          const t   = easeInOutCubic(raw);
+
+          // Move camera back = zoom out
+          camera.position.z = START_Z + (END_Z - START_Z) * t;
+
+          // Start fading overlay in the last 30% of animation
+          if (raw > 0.7) {
+            const fadeT = (raw - 0.7) / 0.3;
+            intro.style.opacity = String(1 - fadeT);
+          }
+
+          renderer.render(scene, camera);
+
+          if (raw < 1) {
+            rafId = requestAnimationFrame(animate);
+          } else {
+            // Done — reveal main content
+            intro.classList.add('fade-out');
+            main.classList.add('visible');
+            setTimeout(() => { intro.style.display = 'none'; }, 900);
+          }
+        }
+
+        rafId = requestAnimationFrame(animate);
+      }
+    })();
+  </script>
 </body>
 </html>
