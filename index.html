@@ -1,324 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>@d4ndr4d3</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maité Grullón Díaz | CV Profesional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #c5a059; /* Dorado elegante para marcas de lujo */
+            --text: #333;
+            --light: #f4f4f4;
+        }
 
-    :root {
-      --bg: #ffffff;
-      --ink: #1a1a18;
-      --accent: #2a52be;
-      --muted: #7a7870;
-      --line: #d8d4cc;
-    }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            margin: 0;
+            background-color: #fff;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      overflow-x: hidden;
-    }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
 
-    /* ── INTRO OVERLAY ── */
-    #intro {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        header h1 {
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
 
-    #intro-canvas {
-      display: block;
-    }
+        header p {
+            color: var(--secondary);
+            font-weight: 300;
+            font-size: 1.2rem;
+        }
 
-    #intro.fade-out {
-      opacity: 0;
-      transition: opacity 0.8s ease;
-      pointer-events: none;
-    }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
 
-    /* ── MAIN CONTENT ── */
-    #main {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      opacity: 0;
-      transition: opacity 0.8s ease 0.4s;
-    }
+        section {
+            margin-bottom: 3rem;
+        }
 
-    #main.visible { opacity: 1; }
+        h2 {
+            border-bottom: 2px solid var(--secondary);
+            display: inline-block;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
 
-    .grain {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 200px;
-      z-index: 1;
-    }
+        .job {
+            margin-bottom: 2rem;
+        }
 
-    .card {
-      max-width: 680px;
-      width: 100%;
-      position: relative;
-      z-index: 2;
-    }
+        .job-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
 
-    .header {
-      display: flex;
-      align-items: baseline;
-      gap: 1.2rem;
-      margin-bottom: 2.5rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--line);
-    }
+        .company {
+            color: var(--secondary);
+            font-style: italic;
+        }
 
-    .handle {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.6rem, 7vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1;
-      color: var(--ink);
-    }
+        .date {
+            color: #777;
+            font-size: 0.9rem;
+        }
 
-    .handle span { color: var(--accent); }
+        ul {
+            padding-left: 1.2rem;
+        }
 
-    .mono-tag {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      align-self: center;
-    }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .section { margin-bottom: 2.2rem; }
+        .skill-tag {
+            background: var(--light);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid #ddd;
+        }
 
-    .section-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
+        .award {
+            background-color: #fff9e6;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
 
-    .section-body {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--ink);
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .tag {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
-      padding: 0.3rem 0.75rem;
-      border: 1px solid var(--line);
-      border-radius: 2px;
-      color: var(--muted);
-      transition: all 0.2s ease;
-      cursor: default;
-      background: transparent;
-    }
-
-    .tag:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(42, 82, 190, 0.04);
-    }
-
-    .tag.primary {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .footer {
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .gh-link {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: color 0.2s;
-    }
-
-    .gh-link:hover { color: var(--accent); }
-    .gh-link svg { width: 14px; height: 14px; }
-
-    .italic-note {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin-left: auto;
-    }
-  </style>
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- INTRO THREE.JS -->
-  <div id="intro">
-    <canvas id="intro-canvas"></canvas>
-  </div>
+<header>
+    <h1>Maité Grullón Díaz</h1>
+    <p>Luxury Brands Operations | Commercial Specialist & Trainer</p>
+</header>
 
-  <!-- MAIN PAGE -->
-  <div class="grain"></div>
-  <div id="main">
-    <div class="card">
-      <div class="header">
-        <h1 class="handle"><span>@</span>d4ndr4d3</h1>
-        <span class="mono-tag">NLP · Law · Language</span>
-      </div>
+<div class="container">
+    
+    <section id="about">
+        <h2>Perfil Profesional</h2>
+        <p>Especialista en operaciones de marcas de lujo con sólida formación en BBA. Experta en gestión comercial, entrenamiento de equipos de alto rendimiento y optimización de KPIs. Trayectoria probada liderando boutiques de prestigio internacional como Montblanc, Tudor y Salvatore Ferragamo.</p>
+    </section>
 
-      <div class="section">
-        <p class="section-label">Focus</p>
-        <p class="section-body">
-          Natural Language Processing — with a focus on <strong>Natural Legal Language Processing (NLLP)</strong> and the computational structures that govern legal argumentation.
-        </p>
-      </div>
+    <section id="experience">
+        <h2>Experiencia Laboral</h2>
 
-      <div class="section">
-        <p class="section-label">Background</p>
-        <p class="section-body">Computational linguistics, argument mining, and the intersection of formal language theory with legal text.</p>
-      </div>
-
-      <div class="section">
-        <p class="section-label">Interests</p>
-        <div class="tags">
-          <span class="tag primary">NLLP</span>
-          <span class="tag primary">Argument Mining</span>
-          <span class="tag">Computational Linguistics</span>
-          <span class="tag">Legal AI</span>
-          <span class="tag">Text Classification</span>
-          <span class="tag">Discourse Structure</span>
+        <div class="job">
+            <div class="job-title">
+                <span>Directora de Boutique - Montblanc & Tudor</span>
+                <span class="date">nov. 2023 - Actualidad</span>
+            </div>
+            <div class="company">Bentrani Watches LLC</div>
+            <p>Liderazgo de operaciones retail para marcas de alta relojería y artículos de lujo. Uso avanzado de Salesforce para gestión de clientes (CRM) y fidelización.</p>
         </div>
-      </div>
 
-      <div class="footer">
-        <a class="gh-link" href="https://github.com/d4ndr4d3" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
-          github.com/d4ndr4d3
-        </a>
-        <span class="italic-note">always learning.</span>
-      </div>
-    </div>
-  </div>
+        <div class="job">
+            <div class="job-title">
+                <span>Gerente de Operaciones</span>
+                <span class="date">jul. 2022 - nov. 2023</span>
+            </div>
+            <div class="company">Salvatore Ferragamo</div>
+            <p>Supervisión integral de la operatividad de la marca, asegurando los estándares de lujo y eficiencia administrativa en Santo Domingo.</p>
+        </div>
 
-  <script>
-    (function () {
-      const canvas = document.getElementById('intro-canvas');
-      const intro  = document.getElementById('intro');
-      const main   = document.getElementById('main');
+        <div class="job">
+            <div class="job-title">
+                <span>Gerente de Tienda</span>
+                <span class="date">dic. 2020 - ene. 2022</span>
+            </div>
+            <div class="company">Pandora (Downtown Center)</div>
+            <div class="award">
+                <strong>🏆 Logro Destacado:</strong> Ganadora del "Holiday’s KPI Contest Award 2021". Top Performance Store Manager de la franquicia US en República Dominicana.
+            </div>
+        </div>
 
-      const W = window.innerWidth;
-      const H = window.innerHeight;
-      canvas.width  = W;
-      canvas.height = H;
+        <div class="job">
+            <div class="job-title">
+                <span>2da Encargada de Tienda - Pull & Bear</span>
+                <span class="date">jul. 2018 - nov. 2020</span>
+            </div>
+            <div class="company">Bennu Corp</div>
+            <ul>
+                <li>Gestión comercial, control de inventarios y elaboración de pedidos.</li>
+                <li>Supervisión, evaluación y entrenamiento del talento humano.</li>
+                <li>Desarrollo de manuales de procedimientos técnicos y administrativos.</li>
+                <li>Análisis de productividad y estrategias de ventas.</li>
+            </ul>
+        </div>
 
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(W, H);
-      renderer.setClearColor(0xffffff, 1);
+        <div class="job">
+            <div class="job-title">
+                <span>3er Encargada de Tienda - Bershka</span>
+                <span class="date">feb. 2016 - jul. 2018</span>
+            </div>
+            <div class="company">Bennu Corp</div>
+            <p>Responsable del seguimiento de ventas, rotación de inventarios y reportes a Dirección Comercial Internacional.</p>
+        </div>
 
-      const scene  = new THREE.Scene();
-      scene.background = new THREE.Color(0xffffff);
+        <div class="job">
+            <div class="job-title">
+                <span>3er Encargada de Tienda - Massimo Dutti</span>
+                <span class="date">ago. 2012 - feb. 2016</span>
+            </div>
+            <div class="company">Grupo Celso Perez</div>
+            <p>Gestión de equipos de ventas y enlace directo con HQ para reportes de producto y estrategias de mercado.</p>
+        </div>
+    </section>
 
-      const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 1000);
-      camera.position.z = 2; // close = logo fills screen
+    <section id="skills">
+        <h2>Aptitudes Clave</h2>
+        <div class="skills">
+            <span class="skill-tag">Administración de Lujo</span>
+            <span class="skill-tag">Salesforce CRM</span>
+            <span class="skill-tag">Gestión de KPIs</span>
+            <span class="skill-tag">Entrenamiento de Equipos</span>
+            <span class="skill-tag">Estrategia Comercial</span>
+            <span class="skill-tag">Resiliencia</span>
+            <span class="skill-tag">Control de Inventarios</span>
+            <span class="skill-tag">Business Intelligence</span>
+        </div>
+    </section>
 
-      // Load logo.jpg (must be in same folder as index.html)
-      const loader  = new THREE.TextureLoader();
-      const texture = loader.load('logo.jpg', onLoaded);
-      texture.minFilter = THREE.LinearFilter;
+</div>
 
-      const geometry = new THREE.PlaneGeometry(1, 1);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      const mesh     = new THREE.Mesh(geometry, material);
-      scene.add(mesh);
+<footer>
+    <p>&copy; 2026 Maité Grullón Díaz - Perfil Profesional</p>
+</footer>
 
-      function onLoaded(tex) {
-        // Correct aspect ratio of the plane to match image
-        const aspect = tex.image.width / tex.image.height;
-        mesh.scale.set(aspect, 1, 1);
-        startAnimation();
-      }
-
-      // Animation
-      const START_Z  = 2;
-      const END_Z    = 20;
-      const DURATION = 2400; // ms
-      let   startTime = null;
-      let   rafId     = null;
-
-      function easeInOutCubic(t) {
-        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      }
-
-      function startAnimation() {
-        // Render one frame immediately so there's no blank flash
-        renderer.render(scene, camera);
-
-        function animate(ts) {
-          if (!startTime) startTime = ts;
-          const elapsed = ts - startTime;
-          const raw = Math.min(elapsed / DURATION, 1);
-          const t   = easeInOutCubic(raw);
-
-          // Move camera back = zoom out
-          camera.position.z = START_Z + (END_Z - START_Z) * t;
-
-          // Start fading overlay in the last 30% of animation
-          if (raw > 0.7) {
-            const fadeT = (raw - 0.7) / 0.3;
-            intro.style.opacity = String(1 - fadeT);
-          }
-
-          renderer.render(scene, camera);
-
-          if (raw < 1) {
-            rafId = requestAnimationFrame(animate);
-          } else {
-            // Done — reveal main content
-            intro.classList.add('fade-out');
-            main.classList.add('visible');
-            setTimeout(() => { intro.style.display = 'none'; }, 900);
-          }
-        }
-
-        rafId = requestAnimationFrame(animate);
-      }
-    })();
-  </script>
 </body>
 </html>
